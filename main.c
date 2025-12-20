@@ -174,6 +174,41 @@ WordNode * insert(WordNode * head){
     return head;
 }
 
+LetterNode * delLetterNode(LetterNode * head){
+
+    if(head == NULL)
+        return head;
+
+    LetterNode * temp = head;
+    head = head->next;
+    free(temp);
+    return head;
+}
+
+LetterNode * delLetterList(LetterNode * head){
+    while(head != NULL)
+          head = delLetterNode(head);
+    return NULL; //not needed, but gets rid of pointer pointing to freed mem
+}
+
+WordNode * delWordNode(WordNode * head){
+
+    if(head == NULL)
+        return head;
+
+    WordNode * temp = head;
+    head = head->next;
+    temp->word = delLetterList(temp->word); //not needed, but gets rid of pointer pointing to freed mem
+    free(temp); //but the pointer gets freed here anyway
+    return head;
+}
+
+WordNode * delWordList(WordNode * head){
+    while(head != NULL)
+        head = delWordNode(head);
+    return NULL; //not needed, but gets rid of pointer pointing to freed mem
+}
+
 int main(){
     char input;
     WordNode * wordsLL = NULL;
@@ -200,6 +235,7 @@ int main(){
             break;
         case 'x':
             printf("\nYOU CHOSE X");
+            wordsLL = delWordList(wordsLL); //theoretically not needed to reassign the wordsLL pointer, but just in case
             break;
         }
     } while (input != 'x');
