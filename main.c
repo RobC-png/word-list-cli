@@ -292,14 +292,13 @@ WordNode * sort(WordNode * head, int (*compare)(LetterNode*, LetterNode*), int d
         WordNode * nodeToSort = sortedPoint->next;
 
         //take the nodeToSort out of the List
-        WordNode * boundry = sortedPoint->next;
         sortedPoint->next = nodeToSort->next;
 
         WordNode * temp = head; //starts at head
         WordNode * prev = NULL; //starts "before" head
         int cmp;
         int inserted = 0;
-        while(temp != boundry){
+        while(temp != sortedPoint->next){
             //compare the two words
             // cmp > 0: nodeToSort should come after temp
             // cmp == 0: nodeToSort is equal to temp
@@ -325,11 +324,11 @@ WordNode * sort(WordNode * head, int (*compare)(LetterNode*, LetterNode*), int d
             temp = temp->next;
         }
         //if it wasn't inserted in the middle of the sorted list, re-insert it at the end
-        if(!inserted)
+        if(!inserted){
+            nodeToSort->next = sortedPoint->next;
             sortedPoint->next = nodeToSort;
-
-        //move the sorted point forward, now that the nodeToSort has been inserted
-        sortedPoint = sortedPoint->next;
+            sortedPoint = sortedPoint->next;
+        }
     }
     return head;
 }
