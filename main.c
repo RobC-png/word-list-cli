@@ -206,7 +206,7 @@ WordNode * delWordNode(WordNode * head){
 
     WordNode * temp = head;
     head = head->next;
-    temp->word = delLetterList(temp->word); //not needed, but gets rid of pointer pointing to freed mem
+    temp->word = delLetterList(temp->word); //free the letter LL
     free(temp); //but the pointer gets freed here anyway
     return head;
 }
@@ -215,6 +215,51 @@ WordNode * delWordList(WordNode * head){
     while(head != NULL)
         head = delWordNode(head);
     return NULL; //not needed, but gets rid of pointer pointing to freed mem
+}
+
+WordNode * delete(WordNode * head){
+    //getting input
+    int index;
+    printf("\nEnter Index: ");
+    scanf(" %d", &index);
+
+    int size = wordLLSize(head);
+
+    //if the list is emtpy
+    if(size == 0)
+        return head;
+
+    int maxIndex = size - 1;
+    int minIndex = 0;
+
+    //invalid index
+    if(index > maxIndex || index < minIndex){
+        printf("\nInvalid index");
+        return head;
+    }
+
+    //valid index
+
+    //if we delete from the beginning
+    if(index == 0)
+        return delWordNode(head);
+
+    //keeping the old head to return it
+    WordNode * before = head;
+
+    //advancing to before the delete node
+    for(int i = 0; i < index - 1; i++){
+        before = before->next;
+    }
+
+    //make before link to nodeToDelete->next, free node to delete
+    WordNode * nodeToDelete = before->next;
+    before->next = nodeToDelete->next;
+    //make sure to both delete the letter LL and the node itself
+    delLetterList(nodeToDelete->word);
+    free(nodeToDelete);
+
+    return head;
 }
 
 int main(){
@@ -230,7 +275,7 @@ int main(){
             wordsLL = insert(wordsLL);
             break;
         case 'd':
-            printf("\nYOU CHOSE D");
+            wordsLL = delete(wordsLL);
             break;
         case 's':
             printf("\nYOU CHOSE S");
