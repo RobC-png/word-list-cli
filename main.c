@@ -24,3 +24,39 @@ int compare_alphabethically(LetterNode* m, LetterNode* n) {
 
     return diff;
 }
+
+char menu(){
+    char input;
+    printf("\nChoose action: (a)ppend, (i)nsert, (d)elete, (s)ort, (p)rint, e(x)it: ");
+    scanf(" %c", &input);
+    return input;
+}
+
+int main(){
+    char input;
+    do{
+        input = menu();
+        switch(input){
+        case 'a':
+            printf("\nYOU CHOSE A");
+            break;
+        case 'i':
+            printf("\nYOU CHOSE I");
+            break;
+        case 'd':
+            printf("\nYOU CHOSE D");
+            break;
+        case 's':
+            printf("\nYOU CHOSE S");
+            break;
+        case 'p':
+            printf("\nYOU CHOSE P");
+            break;
+        case 'x':
+            printf("\nYOU CHOSE X");
+            break;
+        }
+    } while (input != 'x');
+
+    return 0;
+}
