@@ -91,16 +91,6 @@ WordNode * addWordNodeFirst(WordNode * head, WordNode * nodeToAdd){
     return nodeToAdd;
 }
 
-WordNode * addWordNodeAt(WordNode * head, int index, WordNode * nodeToAdd){
-
-    if(index == 0){
-        head = addWordNodeFirst(head, nodeToAdd);
-        return head;
-    }
-
-    return head;
-}
-
 WordNode * append(WordNode * head){
     //getting input
     char wordArr[21] = {};
@@ -133,6 +123,24 @@ WordNode * append(WordNode * head){
     return head;
 }
 
+WordNode * insertWordNodeAt(WordNode * head, int index, WordNode * nodeToAdd){
+
+    if(index == 0){
+        head = addWordNodeFirst(head, nodeToAdd);
+        return head;
+    }
+
+    WordNode * before = head;
+    for(int i = 0; i < index - 1; i++){
+        before = before->next;
+    }
+
+    nodeToAdd->next = before->next;
+    before->next = nodeToAdd;
+
+    return head;
+}
+
 WordNode * insert(WordNode * head){
     //getting input
     int index;
@@ -162,7 +170,7 @@ WordNode * insert(WordNode * head){
     }
 
     WordNode * newWord = createWordNote(wordLL);
-    head = addWordNodeAt(head, index, newWord);
+    head = insertWordNodeAt(head, index, newWord);
     return head;
 }
 
