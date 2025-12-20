@@ -32,13 +32,69 @@ char menu(){
     return input;
 }
 
+LetterNode * createLetterNode(char letter){
+    LetterNode * newNode = (LetterNode *)malloc(sizeof(LetterNode));
+    newNode->letter = letter;
+    newNode->next = NULL;
+    return newNode;
+}
+
+LetterNode * addAtEnd(LetterNode * head, LetterNode * nodeToAdd){
+    //List Emtpy
+    if(head == NULL){
+        nodeToAdd->next = head;
+        return nodeToAdd;
+    }
+
+    //list filled
+    LetterNode * temp = head;
+    while(temp->next != NULL)
+        temp = temp->next;
+    temp->next = nodeToAdd;
+    return head;
+}
+
+void printWord(LetterNode * head){
+    while(head != NULL){
+        printf("%c", head->letter);
+        head = head->next;
+    }
+}
+
+WordNode * createWordNote(LetterNode * wordHead){
+    WordNode * newHead = (WordNode *)malloc(sizeof(WordNode));
+    newHead->word = wordHead;
+    return newHead;
+}
+
+WordNode * append(WordNode * head){
+    //getting input
+    char wordArr[21] = {};
+    printf("Enter Word: ");
+    scanf(" %20s", wordArr);
+
+    //converting string to LL
+    LetterNode * wordLL = NULL;
+    int i = 0;
+    while(wordArr[i] != '\0'){
+        wordLL = addAtEnd(wordLL, createLetterNode(wordArr[i]));
+        i++;
+    }
+
+    printWord(wordLL);
+
+    return head;
+}
+
 int main(){
     char input;
+    WordNode * wordsLL = NULL;
     do{
         input = menu();
         switch(input){
         case 'a':
             printf("\nYOU CHOSE A");
+            wordsLL = append(wordsLL);
             break;
         case 'i':
             printf("\nYOU CHOSE I");
