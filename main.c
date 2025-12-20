@@ -34,6 +34,22 @@ int wordLLSize(WordNode * head){
     return i;
 }
 
+int wordSize(LetterNode * head){
+    int i = 0;
+    while(head != NULL){
+        head = head->next;
+        i++;
+    }
+    return i;
+}
+
+int compare_length(LetterNode* m, LetterNode* n){
+    int mLen = wordSize(m);
+    int nLen = wordSize(n);
+    int diff = mLen - nLen;
+    return diff;
+}
+
 void printWord(LetterNode * head){
     while(head != NULL){
         printf("%c", head->letter);
@@ -262,6 +278,81 @@ WordNode * delete(WordNode * head){
     return head;
 }
 
+WordNode * sort(WordNode * head, int (*compare)(LetterNode*, LetterNode*), int descending){
+    //start with the first element being sorted
+    WordNode * sortedPoint = head;
+
+    //emtpy list
+    if(sortedPoint == NULL)
+        return head;
+
+    //go through the list, stop at the last element
+    while(sortedPoint->next != NULL){
+        //get the first element after the sorted list
+        WordNode * nodeToSort = sortedPoint->next;
+
+        //take the nodeToSort out of the List
+        WordNode * boundry = sortedPoint->next;
+        sortedPoint->next = nodeToSort->next;
+
+        WordNode * temp = head; //starts at head
+        WordNode * prev = NULL; //starts "before" head
+        int cmp;
+        int inserted = 0;
+        while(temp != boundry){
+            //compare the two words
+            // cmp > 0: nodeToSort should come after temp
+            // cmp == 0: nodeToSort is equal to temp
+            // cmp < 0: nodeToSort should be inserted before temp
+            cmp = compare(nodeToSort->word, temp->word);
+            cmp = descending ? -cmp : cmp;
+            //if nodeToSort needs to be inserted in front of temp
+            if(cmp <= 0){
+                //insert my node, break out of inner loop
+                //set the next node after the inserted node to temp
+                nodeToSort->next = temp;
+                //if nodeToSort gets inserted at the head
+                if(prev == NULL){
+                    //assign a new head
+                    head = nodeToSort;
+                } else{
+                    prev->next = nodeToSort;
+                }
+                inserted = 1;
+                break; //exit the inner loop
+            }
+            prev = temp;
+            temp = temp->next;
+        }
+        //if it wasn't inserted in the middle of the sorted list, re-insert it at the end
+        if(!inserted)
+            sortedPoint->next = nodeToSort;
+
+        //move the sorted point forward, now that the nodeToSort has been inserted
+        sortedPoint = sortedPoint->next;
+    }
+    return head;
+}
+
+WordNode * sortMenu(WordNode * head){
+    //getting input
+    char sortBy;
+    printf("\nSort (a)lphabetically or by (l)ength? ");
+    scanf(" %c", &sortBy);
+
+    char ascDesc;
+    printf("\nSort (a)scending or (d)escending? ");
+    scanf(" %c", &ascDesc);
+
+    head = sort(
+        head,
+        sortBy  == 'a' ? compare_alphabethically : compare_length,
+        ascDesc == 'd' ? 1 : 0
+    );
+
+    return head;
+}
+
 int main(){
     char input;
     WordNode * wordsLL = NULL;
@@ -278,7 +369,7 @@ int main(){
             wordsLL = delete(wordsLL);
             break;
         case 's':
-            printf("\nYOU CHOSE S");
+            wordsLL = sortMenu(wordsLL);
             break;
         case 'p':
             printWords(wordsLL);
