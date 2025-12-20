@@ -42,12 +42,20 @@ void printWord(LetterNode * head){
 }
 
 void printWords(WordNode * head){
+    //oops, emtpy list
+    if(head == NULL){
+        printf("\nempty list");
+        return;
+    }
+
+    //filled list, don't forget the trailing \n
     printf("\n");
     while(head != NULL){
         printWord(head->word);
         printf(" ");
         head = head->next;
     }
+    return;
 }
 
 char menu(){
@@ -105,8 +113,6 @@ WordNode * append(WordNode * head){
         i++;
     }
 
-    printWord(wordLL);
-
     WordNode * newNode = createWordNote(wordLL);
 
     //List Emtpy
@@ -150,11 +156,13 @@ WordNode * insert(WordNode * head){
     int maxIndex = wordLLSize(head);
     int minIndex = 0;
 
+    //invalid index
     if(index > maxIndex || index < minIndex){
         printf("\nInvalid index");
         return head;
     }
-    printf("\nValid index");
+
+    //valid index
 
     //getting input
     char wordArr[21] = {};
@@ -216,11 +224,9 @@ int main(){
         input = menu();
         switch(input){
         case 'a':
-            printf("\nYOU CHOSE A");
             wordsLL = append(wordsLL);
             break;
         case 'i':
-            printf("\nYOU CHOSE I");
             wordsLL = insert(wordsLL);
             break;
         case 'd':
@@ -230,11 +236,9 @@ int main(){
             printf("\nYOU CHOSE S");
             break;
         case 'p':
-            printf("\nYOU CHOSE P");
             printWords(wordsLL);
             break;
         case 'x':
-            printf("\nYOU CHOSE X");
             wordsLL = delWordList(wordsLL); //theoretically not needed to reassign the wordsLL pointer, but just in case
             break;
         }
