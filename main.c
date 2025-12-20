@@ -58,7 +58,7 @@ void printWord(LetterNode * head){
 }
 
 void printWords(WordNode * head){
-    //oops, emtpy list
+    //emtpy list
     if(head == NULL){
         printf("\nempty list");
         return;
@@ -152,11 +152,15 @@ WordNode * insertWordNodeAt(WordNode * head, int index, WordNode * nodeToAdd){
         return head;
     }
 
+    //create a temp node to keep head
     WordNode * before = head;
+    //loop to in front of the insertion index
+    //index is already validated
     for(int i = 0; i < index - 1; i++){
         before = before->next;
     }
 
+    //add the node between before and before->next
     nodeToAdd->next = before->next;
     before->next = nodeToAdd;
 
@@ -169,10 +173,11 @@ WordNode * insert(WordNode * head){
     printf("\nEnter Index: ");
     scanf(" %d", &index);
 
+    //can also insert at maxIndex + 1, therefore no -1
     int maxIndex = wordLLSize(head);
     int minIndex = 0;
 
-    //invalid index
+    //validate index
     if(index > maxIndex || index < minIndex){
         printf("\nInvalid index");
         return head;
@@ -200,9 +205,11 @@ WordNode * insert(WordNode * head){
 
 LetterNode * delLetterNode(LetterNode * head){
 
+    //if the LetterLL is emtpy
     if(head == NULL)
         return head;
 
+    //shift head and del old one
     LetterNode * temp = head;
     head = head->next;
     free(temp);
@@ -211,15 +218,17 @@ LetterNode * delLetterNode(LetterNode * head){
 
 LetterNode * delLetterList(LetterNode * head){
     while(head != NULL)
-          head = delLetterNode(head);
+        head = delLetterNode(head);
     return NULL; //not needed, but gets rid of pointer pointing to freed mem
 }
 
 WordNode * delWordNode(WordNode * head){
 
+    //if WordLL is emtpy
     if(head == NULL)
         return head;
 
+    //shift head and del old one
     WordNode * temp = head;
     head = head->next;
     temp->word = delLetterList(temp->word); //free the letter LL
@@ -245,10 +254,11 @@ WordNode * delete(WordNode * head){
     if(size == 0)
         return head;
 
+    //can only del existing indexes
     int maxIndex = size - 1;
     int minIndex = 0;
 
-    //invalid index
+    //index validation
     if(index > maxIndex || index < minIndex){
         printf("\nInvalid index");
         return head;
@@ -278,57 +288,78 @@ WordNode * delete(WordNode * head){
     return head;
 }
 
+//base algo: insertion sort
 WordNode * sort(WordNode * head, int (*compare)(LetterNode*, LetterNode*), int descending){
-    //start with the first element being sorted
+    
+    //we set the first node to be sorted
     WordNode * sortedPoint = head;
 
-    //emtpy list
-    if(sortedPoint == NULL)
+    //if the head is emtpy there is nothing to sort
+    //same thing if there only is one element
+    if(sortedPoint == NULL || sortedPoint->next == NULL)
         return head;
 
-    //go through the list, stop at the last element
+    //loop through the list until the sorted point is the last node
+    //then we know the list is sorted
     while(sortedPoint->next != NULL){
-        //get the first element after the sorted list
+
+        //get the first node after the sorted point
         WordNode * nodeToSort = sortedPoint->next;
 
-        //take the nodeToSort out of the List
+        //extract the nodeToSort from the LL
+        //it still points to the next Node, but when traversing it wont be found
         sortedPoint->next = nodeToSort->next;
 
-        WordNode * temp = head; //starts at head
-        WordNode * prev = NULL; //starts "before" head
-        int cmp;
-        int inserted = 0;
+        //looping through the list again
+        WordNode * temp = head; //keeping track of the inner loop position
+        WordNode * prev = NULL; //stays 1 behind temp, for insertion
+        int inserted = 0; //to check if the value was inserted in the middle or end
+
+        //goes through the sorted list and checks where to insert the nodeToSort
+        //stops when it reaches the first node outside of the sorted list
         while(temp != sortedPoint->next){
-            //compare the two words
-            // cmp > 0: nodeToSort should come after temp
-            // cmp == 0: nodeToSort is equal to temp
-            // cmp < 0: nodeToSort should be inserted before temp
-            cmp = compare(nodeToSort->word, temp->word);
+
+            //comparison result
+            //cmp > 0: nodeToSort should come after temp (keep searching)
+            //cmp == 0: nodeToSort equals temp (insert here)
+            //cmp < 0: nodeToSort should come before temp (insert here)
+            int cmp = compare(nodeToSort->word, temp->word);
+
+            //flip when sorting desc
             cmp = descending ? -cmp : cmp;
-            //if nodeToSort needs to be inserted in front of temp
+
+            //insert the node before the temp node
             if(cmp <= 0){
-                //insert my node, break out of inner loop
-                //set the next node after the inserted node to temp
                 nodeToSort->next = temp;
-                //if nodeToSort gets inserted at the head
+
                 if(prev == NULL){
-                    //assign a new head
+                    //inserting at the beginning
                     head = nodeToSort;
                 } else{
+                    //inserting in the middle
                     prev->next = nodeToSort;
                 }
+                
+                //insertion point in the middle has been found, exit the inner loop
                 inserted = 1;
-                break; //exit the inner loop
+                break;
             }
+
+            //if the point wasnt found, check the next node
             prev = temp;
             temp = temp->next;
         }
-        //if it wasn't inserted in the middle of the sorted list, re-insert it at the end
+
+        //if the inner loops stops with inserted = 0:
+        //we need to insert at the end
         if(!inserted){
+            //reinsert nodeToSort at the end of the sorted list
             nodeToSort->next = sortedPoint->next;
             sortedPoint->next = nodeToSort;
+            //sortedPoint is now the confirmed end of the sorted list
             sortedPoint = sortedPoint->next;
         }
+        //no need to move the sorted point forward, if it wasn't added at the end
     }
     return head;
 }
@@ -374,7 +405,8 @@ int main(){
             printWords(wordsLL);
             break;
         case 'x':
-            wordsLL = delWordList(wordsLL); //theoretically not needed to reassign the wordsLL pointer, but just in case
+            //theoretically not needed to reassign the wordsLL pointer, but just in case
+            wordsLL = delWordList(wordsLL);
             break;
         }
     } while (input != 'x');
