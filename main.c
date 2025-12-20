@@ -25,6 +25,15 @@ int compare_alphabethically(LetterNode* m, LetterNode* n) {
     return diff;
 }
 
+int wordLLSize(WordNode * head){
+    int i = 0;
+    while(head != NULL){
+        head = head->next;
+        i++;
+    }
+    return i;
+}
+
 char menu(){
     char input;
     printf("\nChoose action: (a)ppend, (i)nsert, (d)elete, (s)ort, (p)rint, e(x)it: ");
@@ -39,7 +48,7 @@ LetterNode * createLetterNode(char letter){
     return newNode;
 }
 
-LetterNode * addAtEnd(LetterNode * head, LetterNode * nodeToAdd){
+LetterNode * addLetterNodeAtEnd(LetterNode * head, LetterNode * nodeToAdd){
     //List Emtpy
     if(head == NULL){
         nodeToAdd->next = head;
@@ -67,21 +76,43 @@ WordNode * createWordNote(LetterNode * wordHead){
     return newHead;
 }
 
+WordNode * addWordNodeFirst(WordNode * head, WordNode * nodeToAdd){
+    nodeToAdd->next = head;
+    return nodeToAdd;
+}
+
+WordNode * addWordNodeAt(WordNode * head, int index, WordNode * nodeToAdd){
+
+
+    if(index == 0){
+        return addWordNodeFirst(head, nodeToAdd);
+    }
+}
+
 WordNode * append(WordNode * head){
     //getting input
     char wordArr[21] = {};
-    printf("Enter Word: ");
+    printf("\nEnter Word: ");
     scanf(" %20s", wordArr);
 
     //converting string to LL
     LetterNode * wordLL = NULL;
     int i = 0;
     while(wordArr[i] != '\0'){
-        wordLL = addAtEnd(wordLL, createLetterNode(wordArr[i]));
+        wordLL = addLetterNodeAtEnd(wordLL, createLetterNode(wordArr[i]));
         i++;
     }
 
     printWord(wordLL);
+
+    return head;
+}
+
+WordNode * insert(WordNode * head){
+    int maxIndex = wordLLSize(head) - 1;
+    int minIndex = 0;
+    if(index > maxIndex || index < minIndex)
+        printf("\nInvalid index");
 
     return head;
 }
